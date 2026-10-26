@@ -98,4 +98,8 @@ Repeat with `hotfix/example-fix` if desired.
 
 ## Interview explanation
 
-“I built a Jenkins Multibranch Pipeline using a Declarative Jenkinsfile stored with the application code. Jenkins discovers branches that contain the Jenkinsfile and creates an independent job for each branch. Each run checks out source code, validates syntax, runs a review gate and automated tests, packages a versioned artifact with a checksum, and archives the output. The release-artifact stage is restricted to the main branch so feature branches can be validated without being treated as releases.”
+“I built a Jenkins Multibranch Pipeline using a Declarative Jenkinsfile stored with the application code. Jenkins discovers branches that contain the Jenkinsfile and creates an independent job for each branch. Each run checks out source code, validates syntax, runs a review gate and automated tests, packages a versioned artifact with a checksum, and archives the output. The release-artifact stage is restricted to the main branch so feature branches can be validated without being treated as releases.
+
+# Jenkins-Multibranch-Pipeline-Demo
+A hands-on DevOps project demonstrating Jenkins Multibranch Pipelines, Declarative CI/CD, automated branch discovery, testing, packaging, and deployment workflows.
+1adcd925fe2908b994b56789a63a030844531451
