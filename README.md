@@ -11,7 +11,6 @@ A beginner-friendly DevOps project demonstrating branch-aware CI/CD with Jenkins
 5. **Package** — creates a versioned `.tar.gz`, checksum, and archives artifacts in Jenkins.
 6. **Deploy** — only on `main` or `master`, prepares and archives a release bundle. This is a safe demo deployment artifact, not a production infrastructure deployment.
 
-> The assignment uses the word “Review”; in a real organization this stage might run tools such as Ruff, SonarQube, or another approved static-analysis tool. The project intentionally works without external Python dependencies.
 
 ## Repository layout
 
@@ -96,10 +95,3 @@ Repeat with `hotfix/example-fix` if desired.
 - Jenkins needs Python 3 installed on the selected agent. `agent any` means any eligible agent, not any operating system.
 - A Multibranch Pipeline discovers branches; a webhook or scan schedule determines how quickly Jenkins notices changes.
 
-## Interview explanation
-
-“I built a Jenkins Multibranch Pipeline using a Declarative Jenkinsfile stored with the application code. Jenkins discovers branches that contain the Jenkinsfile and creates an independent job for each branch. Each run checks out source code, validates syntax, runs a review gate and automated tests, packages a versioned artifact with a checksum, and archives the output. The release-artifact stage is restricted to the main branch so feature branches can be validated without being treated as releases.
-
-# Jenkins-Multibranch-Pipeline-Demo
-A hands-on DevOps project demonstrating Jenkins Multibranch Pipelines, Declarative CI/CD, automated branch discovery, testing, packaging, and deployment workflows.
-1adcd925fe2908b994b56789a63a030844531451
