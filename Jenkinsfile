@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -17,39 +18,42 @@ pipeline {
             steps {
                 echo "Building branch: ${env.BRANCH_NAME ?: 'manual'}"
                 checkout scm
-                sh 'git rev-parse --short HEAD'
+                bat 'git rev-parse --short HEAD'
             }
         }
 
         stage('Compile') {
             steps {
-                sh 'python --version'
-                sh 'python -m compileall -q app tests'
+                bat 'python --version'
+                bat 'python -m compileall -q app tests'
             }
         }
 
         stage('Review') {
             steps {
-                sh 'python scripts/review.py'
+                bat 'python scripts/review.py'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'python -m unittest discover -s tests -p "test_*.py" -v'
+                bat 'python -m unittest discover -s tests -p "test_*.py" -v'
             }
         }
 
         stage('Package') {
             steps {
-                sh '''
-                    set -eu
-                    rm -rf "$PACKAGE_DIR"
-                    mkdir -p "$PACKAGE_DIR"
-                    cp -R app "$PACKAGE_DIR/app"
-                    cp README.md "$PACKAGE_DIR/README.md"
-                    tar -czf "$PACKAGE_DIR/${APP_NAME}-${BUILD_NUMBER}.tar.gz" -C "$PACKAGE_DIR" app README.md
-                    sha256sum "$PACKAGE_DIR/${APP_NAME}-${BUILD_NUMBER}.tar.gz" > "$PACKAGE_DIR/checksum.sha256"
+                bat '''
+                    if exist "%PACKAGE_DIR%" rmdir /s /q "%PACKAGE_DIR%"
+                    mkdir "%PACKAGE_DIR%"
+                    xcopy app "%PACKAGE_DIR%\\app\\" /E /I /Q /Y
+                    if errorlevel 1 exit /b 1
+                    copy README.md "%PACKAGE_DIR%\\README.md"
+                    if errorlevel 1 exit /b 1
+                    tar -czf "%PACKAGE_DIR%\\%APP_NAME%-%BUILD_NUMBER%.tar.gz" -C "%PACKAGE_DIR%" app README.md
+                    if errorlevel 1 exit /b 1
+                    certutil -hashfile "%PACKAGE_DIR%\\%APP_NAME%-%BUILD_NUMBER%.tar.gz" SHA256 > "%PACKAGE_DIR%\\checksum.sha256"
+                    if errorlevel 1 exit /b 1
                 '''
                 archiveArtifacts artifacts: 'dist/*', fingerprint: true
             }
@@ -64,12 +68,17 @@ pipeline {
             }
             steps {
                 echo 'Deploy stage: publishing the validated build artifact to the Jenkins workspace.'
-                sh '''
-                    set -eu
-                    mkdir -p deployment
-                    cp "$PACKAGE_DIR/${APP_NAME}-${BUILD_NUMBER}.tar.gz" deployment/
-                    cp "$PACKAGE_DIR/checksum.sha256" deployment/
-                    printf 'branch=%s\nbuild=%s\ncommit=%s\n' "$BRANCH_NAME" "$BUILD_NUMBER" "$(git rev-parse --short HEAD)" > deployment/release-info.txt
+                bat '''
+                    if not exist deployment mkdir deployment
+                    copy "%PACKAGE_DIR%\\%APP_NAME%-%BUILD_NUMBER%.tar.gz" deployment\\
+                    if errorlevel 1 exit /b 1
+                    copy "%PACKAGE_DIR%\\checksum.sha256" deployment\\
+                    if errorlevel 1 exit /b 1
+                    (
+                        echo branch=%BRANCH_NAME%
+                        echo build=%BUILD_NUMBER%
+                        for /f %%C in ('git rev-parse --short HEAD') do echo commit=%%C
+                    ) > deployment\\release-info.txt
                 '''
                 archiveArtifacts artifacts: 'deployment/*', fingerprint: true
             }
