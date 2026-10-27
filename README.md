@@ -186,6 +186,3 @@ This troubleshooting process demonstrates the importance of matching Jenkins pip
 - Archived build outputs and release metadata in Jenkins.
 - Verified a successful end-to-end CI pipeline run.
 
-## Repository
-
-[View the Jenkins Multibranch Pipeline Demo on GitHub](https://github.com/Megna0710/Jenkins-Multibranch-Pipeline-Demo)
