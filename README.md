@@ -23,8 +23,6 @@ A beginner-friendly DevOps project demonstrating branch-aware CI/CD with Jenkins
 │   ├── test_app.py
 │   └── test_review.py
 ├── scripts/review.py
-├── Dockerfile
-├── .dockerignore
 ├── .gitignore
 ├── .github/workflows/validate.yml
 └── README.md
@@ -55,12 +53,6 @@ Then open `http://localhost:8080/health`. Expected response:
 
 Stop it with `Ctrl+C`.
 
-## Run with Docker (optional)
-
-```bash
-docker build -t jenkins-multibranch-demo:local .
-docker run --rm -p 8080:8080 jenkins-multibranch-demo:local
-```
 
 ## Configure Jenkins Multibranch Pipeline
 
